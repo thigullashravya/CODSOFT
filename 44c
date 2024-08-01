@@ -1,0 +1,175 @@
+#include<stdio.h>
+#include<conio.h>
+#include<ctype.h>
+#include<string.h>
+struct stack
+{
+	int top;
+	char a[20];
+} s;
+void push(char q)
+{
+	s.top++;
+	s.a[s.top]=q;
+}
+char pop()
+{
+	char q;
+	q=s.a[s.top];
+	s.top--;
+	return q;
+}
+void main()
+{
+	char tb[12][9][4]={"s5","n","n","s4","n","n","1","2","3","n",
+				"s6","n","n","n","a","n","n","n","n","r2",
+				"s7","n","r2","r2","n","n","n","n","r4","r4",
+				"n","r4","r4","n","n","n","s5","n","n","s4",
+				"n","n","8","2","3","n","r6","r6","n","r6","r6",
+				"n","n","n","s5","n","n","s4","n","n","n",
+				"9","3","s5","n","n","s4","n","n","n","n",
+				"A","n","s6","n","n","s11","n","n","n","n",
+				"n","r1","s7","n","r1","r1","n","n","n","n",
+				"r3","r3","n","r3","r3","n","n","n","n","r5",
+				"r5","n","r5","r5","n","n","n"};
+	char buf[20],c;
+	int p=0,row=0,col=0;
+	clrscr();
+	s.top=-1;
+	printf("\nE->E+T\nE->T\nT->T*F\nT->F\nF->(E)\nF->i");
+	printf("\nEnter the input string:");
+	scanf("%s",buf);
+	strcat(buf,"$");
+	push('0');
+	while(strcmp(tb[row][col],"a"))
+	{
+		switch(s.a[s.top])
+		{
+			case '0' : row=0;
+				   break;
+			case '1' : row=1;
+				   break;
+			case '2' : row=2;
+				   break;
+			case '3' : row=3;
+				   break;
+			case '4' : row=4;
+				   break;
+			case '5' : row=5;
+				   break;
+			case '6' : row=6;
+				   break;
+			case '7' : row=7;
+				   break;
+			case '8' : row=8;
+				   break;
+			case '9' : row=9;
+				   break;
+			case 'A' : row=10;
+				   break;
+			case 'B' : row=11;
+				   break;
+			default : printf("\nNot Accepted");
+				  return;
+		}
+		switch(buf[p])
+		{
+			case 'i' : col=0;
+				   break;
+			case '+' : col=1;
+				   break;
+			case '*' : col=2;
+				   break;
+			case '(' : col=3;
+				   break;
+			case ')' : col=4;
+				   break;
+			case '$' : col=5;
+				   break;
+			default : printf("\nInvalid String");
+				  return;
+		}
+		if(tb[row][col][0]=='n')
+		{
+			printf("\nNot Accepted");
+			return;
+		}
+		switch(tb[row][col][0])
+		{
+			case 's' : push(buf[p]);
+				   p++;
+				   push(tb[row][col][1]);
+				   break;
+			case 'r' : switch(tb[row][col][1])
+				   {
+					case '1' : while(s.a[s.top]!='E')
+							pop();
+						   pop();
+						   c=pop();
+						   push(c);
+						   push('E');
+						   break;
+					case '2' : while(s.a[s.top]!='T')
+							pop();
+						   pop();
+						   c=pop();
+						   push(c);
+						   push('E');
+						   break;
+					case '3' : while(s.a[s.top]!='T')
+							pop();
+						   pop();
+						   c=pop();
+						   push(c);
+						   push('T');
+						   break;
+					case '4' : while(s.a[s.top]!='F')
+							pop();
+						   pop();
+						   c=pop();
+						   push(c);
+						   push('T');
+						   break;
+					case '5' : while(s.a[s.top]!='(')
+							pop();
+						   pop();
+						   c=pop();
+						   push(c);
+						   push('F');
+						   break;
+					case '6' : while(s.a[s.top]!='i')
+							pop();
+						   pop();
+						   c=pop();
+						   push(c);
+						   push('F');
+						   break;
+				   }
+				   break;
+			}
+			switch(s.a[s.top])
+			{
+				case 'E' : if(c=='0')
+						push('1');
+					   if(c=='4')
+						push('8');
+					   break;
+				case 'T' : if(c=='0' || c=='4')
+						push('2');
+					   if(c=='6')
+						push('9');
+					   break;
+				case 'F' : if(c=='0' || c=='4' || c=='6')
+						push('3');
+					   if(c=='7')
+						push('A');
+					   break;
+			}
+		}
+		if(row==1 && col==5)
+			printf("\nAccepted");
+		else
+			printf("\nNot Accepted");
+		getch();
+}
+
